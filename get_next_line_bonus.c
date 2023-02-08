@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_next_line.c                                    :+:    :+:            */
+/*   get_next_line_bonus.c                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: ibehluli <ibehluli@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/11/02 12:30:10 by ibehluli      #+#    #+#                 */
-/*   Updated: 2023/02/07 12:10:01 by ibehluli      ########   odam.nl         */
+/*   Created: 2023/02/08 09:46:49 by ibehluli      #+#    #+#                 */
+/*   Updated: 2023/02/08 09:54:56 by ibehluli      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_change_text(char *text)
 {
@@ -91,26 +91,26 @@ char	*read_line_change_text(int fd, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[12288];
 	char		*line;
 
 	if (fd < 0 && BUFFER_SIZE < 1)
 		return (NULL);
-	buffer = read_line_change_text(fd, buffer);
-	if (!buffer)
+	buffer[fd] = read_line_change_text(fd, buffer[fd]);
+	if (!buffer[fd])
 		return (NULL);
-	line = read_line(buffer);
+	line = read_line(buffer[fd]);
 	if (!line)
 	{
-		free(buffer);
-		buffer = NULL;
+		free(buffer[fd]);
+		buffer[fd] = NULL;
 		return (NULL);
 	}
-	buffer = ft_change_text(buffer);
-	if (buffer && ft_strlen(buffer) == 0)
+	buffer[fd] = ft_change_text(buffer[fd]);
+	if (buffer[fd] && ft_strlen(buffer[fd]) == 0)
 	{
-		free(buffer);
-		buffer = NULL;
+		free(buffer[fd]);
+		buffer[fd] = NULL;
 	}
 	return (line);
 }
